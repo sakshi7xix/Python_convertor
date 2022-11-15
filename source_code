@@ -1,0 +1,530 @@
+package project;
+
+import java.util.Scanner;
+import java.util.*;
+import java.util.StringTokenizer;
+public class sathya {
+
+	public static void main(String[] args) {
+		inprocess ob=new inprocess();
+		ob.inpt();
+		ob.countlines();
+		ob.token();
+		ob.sent();
+		ob.clearScreen();
+		ob.print();
+	}
+	
+}
+package project;
+
+import java.util.Scanner;
+import java.util.*;
+import java.util.StringTokenizer;
+class inprocess
+{
+	int vari=0;
+	String var[]=new String[100];
+	String output="";
+	String [] loops= {"while","if","elif","else"};
+	int num[]= {0,1,2,3,3,4,5,6,7,8,9};
+	int forflag=0;
+	int loopflag=0;
+	String previns="";
+	public String op[]= {"+","-","*","/"};
+	public LinkedList<String> pyth=new LinkedList();
+	public int linecnt;
+	public String dt []={"int","float","double","","list"};
+	public int lines[]=new int[100];
+	public LinkedList<String> ll=new LinkedList();
+	public String input="";
+	public void inpt()
+	{
+		Scanner ob =new Scanner(System.in);
+		System.out.println("\n");
+		System.out.println("ENTER YOUR PSUEDO CODE");
+		System.out.println("ADD '$' AT THE END OF YOUR PSEUDOCODE");
+		System.out.println("-----------------------------------------------------");
+		while(ob.hasNext())
+		{
+			input=input+ob.nextLine()+"\n";
+			if(input.contains("$"))
+			{
+				break;
+			}
+		}
+		ob.close();
+	}
+	public void countlines()
+	{
+		int i=0,j=0,count=1;
+		for(i=0;i<input.length();i++)
+		{
+			if(input.charAt(i)==' ')
+				count++;
+			if(input.charAt(i)=='\n')
+			{
+				lines[j]=count;
+				count=1;
+				j++;
+			}	
+			
+		}
+		linecnt=j;
+	}
+	public void token()
+	{
+		 String replstr="";
+		 StringTokenizer st = new StringTokenizer(input);  
+	     while (st.hasMoreTokens()) 
+	     {  
+	    	 ll.add(st.nextToken());
+	     }
+	     StringBuilder sb = new StringBuilder((ll.get(ll.size()-1)));
+	     sb.deleteCharAt((ll.get(ll.size()-1)).length()-1);
+	     replstr=sb.toString();
+	     ll.set((ll.size()-1),replstr);
+	}
+	int search(String key)
+	{
+		int i;
+		for(i=0;i<vari;i++)
+		{
+			if(key.equals(var[i].toString()))
+			{
+				return 1;	
+			}
+			
+		}
+		return -1;
+	}
+	int print(LinkedList<String> sentence)
+	{
+		int i,map;
+		String py="";
+		if(sentence.getFirst().equals("print"))
+		{
+			if(loopflag!=0)
+			{
+				py=py+"\t"+"print(\"";
+			}
+			else
+				py=py+"print(\"";
+			map=search(sentence.getLast());
+			if(map==1)
+			{
+				py="";
+				py=py+"print("+sentence.getLast()+")";
+				output=output+py+"\n";
+				return 1;
+			}
+			else
+			{
+				for (i=1;i<sentence.size();i++)
+				{
+					if(i!=(sentence.size()-1))
+					{
+						py=py+sentence.get(i)+" ";
+					}
+					else
+					{
+						py=py+sentence.get(i);
+					}
+				}
+				py=py+"\")";
+				//System.out.println(py);
+				pyth.add(py);
+				output=output+py+"\n";
+				return 1;
+			}
+		}
+		else
+			return 0;
+		
+		
+	}
+	int mapfunc(String str)
+	{
+		if(str.equals("one")||str.equals("a")||str.equals("an")||str.equals("1"))
+			return 1;
+		else if(str.equals("two")||str.equals("2"))
+			return 2;
+		else if(str.equals("three")||str.equals("3"))
+			return 3;
+		else if(str.equals("four")||str.equals("4"))
+			return 4;
+		else if(str.equals("five")||str.equals("5"))
+			return 5;
+		else if(str.equals("six")||str.equals("6"))
+			return 6;
+		else if(str.equals("seven")||str.equals("7"))
+			return 7;
+		else if(str.equals("eight")||str.equals("8"))
+			return 8;
+		else if(str.equals("nine")||str.equals("9"))
+			return 9;
+		else
+			return 0;		
+	}
+	int datatypes(String str)
+	{
+		if(str.equals("integers")||str.equals("int")||str.equals("integer"))
+			return 0;
+		else if(str.equals("float")||str.equals("floats"))
+			return 1;
+		else if(str.equals("double")||str.equals("doubles"))
+			return 2;
+		else if(str.equals("string")||str.equals("strings"))
+			return 3;
+		else if(str.equals("array")||str.equals("string array"))
+			return 4;
+		else 
+			return -1;
+	}
+	int inputting(LinkedList<String> sentence)
+	{
+		
+		int i,map,mapdt;
+		String py="";
+		if(sentence.getFirst().equals("input"))
+		{
+				map=mapfunc(sentence.get(1));
+				if(map==1)
+				{
+					mapdt=datatypes(sentence.get(2));
+					if(mapdt!=-1)
+					{
+						if(loopflag!=0)
+						{
+							py=py+"\t"+sentence.get(3)+"=";
+						}
+						else
+						{
+							py=py+sentence.get(3)+"=";
+						}
+						py=py+dt[mapdt]+"(input())";
+					}
+					pyth.add(py);
+					output=output+py+"\n";
+				}
+				else
+				{	
+					mapdt=datatypes(sentence.get(2));
+					if(mapdt!=-1)
+					{
+						
+						for(i=3;i<sentence.size();i++)
+						{
+							
+							if(i!=(sentence.size()-1))
+								if(loopflag!=0)
+									py=py+"\t"+sentence.get(i)+",";
+								else
+									py=py+sentence.get(i)+",";
+							else
+								if(loopflag!=0)
+									py=py+"\t"+sentence.get(i)+"=";
+								else
+									py=py+sentence.get(i)+"=";
+						}
+						py=py+"map("+dt[mapdt]+",input().split())";
+						pyth.add(py);
+						output=output+py+"\n";
+					}
+				}
+				return 1;
+		}
+		
+		return 0;
+	}
+	int operation(String str)
+	{
+		if(str.equals("add"))
+			return 0;
+		else if(str.equals("subtract"))
+			return 1;
+		else if(str.equals("multiply"))
+			return 2;
+		else if(str.equals("divide"))
+			return 3;
+		else
+			return 4;
+	}
+	int arth(LinkedList<String> sentence)
+	{
+		String py="";
+		int armap,i;
+		armap=operation(sentence.getFirst());
+		//System.out.println(armap);
+		if(armap!=4&&armap!=1)
+		{
+			sentence.remove(sentence.size()-2);
+			//System.out.println(sentence);
+			for(i=1;i<(sentence.size());i++)
+			{
+				if(i==(sentence.size()-1))
+				{
+					py=py+sentence.get(i);
+				}
+				else		
+					py=py+sentence.get(i)+op[armap];
+			}
+			previns=py;
+			//System.out.println(py);
+			pyth.add(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		else if(armap==1)
+		{
+			sentence.remove(sentence.size()-2);
+			for(i=(sentence.size()-1);i>0;i--)
+			{
+				if(i==(1))
+				{
+					py=py+sentence.get(i);
+				}
+				else		
+					py=py+sentence.get(i)+op[armap];
+			}
+			previns=py;
+			//System.out.println(py);
+			pyth.add(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		else
+			return -1;
+	}
+	int condmap(String str)
+	{
+		if(str.equals("while"))
+			return 0;
+		else if(str.equals("if"))
+			return 1;
+		else if(str.equals("elseif"))
+			return 2;
+		else if(str.equals("else"))
+			return 3;
+		else
+			return 4;		
+	}
+	int loopscondition(LinkedList<String> sentence)
+	{
+		String py="";
+		int map;
+		String str;
+		if(sentence.getFirst().equals("for"))
+		{
+			forflag=1;
+			loopflag=1;
+			str=sentence.get(1).toString();
+			py=py+"for "+str.charAt(0)+" in range("+str.charAt(2)+","+sentence.get(3)+"):";
+			output=output+py+"\n";
+			pyth.add(py);
+			return 1;
+		}
+		if(sentence.getFirst().equals("while"))
+		{
+			loopflag=1;
+			str=sentence.get(1).toString();
+			py=py+"while("+sentence.get(1)+"):";
+			//System.out.println(py);
+			output=output+py+"\n";
+			pyth.add(py);
+			return 1;
+		}
+		else if(sentence.getFirst().equals("if"))
+		{
+			loopflag=1;
+			str=sentence.get(1).toString();
+			py=py+"if("+sentence.get(1)+"):";
+			//System.out.println(py);
+			pyth.add(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		if(sentence.get(0).equals("else")&&(sentence.size()==1))
+		{
+			loopflag=1;
+			py=py+"else:";
+			//System.out.println(py);
+			pyth.add(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		if((sentence.getFirst().equals("else"))&&(sentence.get(1).equals("if")))
+		{
+			loopflag=1;
+			str=sentence.get(2).toString();
+			py=py+"elif("+sentence.get(2)+"):";
+			//System.out.println(py);
+			pyth.add(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		return -1;
+		
+	}
+	int ending(LinkedList<String> sentence)
+	{
+		if(sentence.getFirst().equals("end"))
+		{
+			loopflag=0;
+			return 1;
+		}
+		else
+			return -1;
+	}
+	int increment(LinkedList<String> sentence)
+	{
+		String py="";
+		int map;
+		if(forflag!=0)
+		{
+			py="";
+			forflag=0;
+			return 1;
+		}
+		else if(forflag==0)
+		{
+			if(sentence.getFirst().equals("increment")&&sentence.get(2).equals("by"))
+			{
+				map=mapfunc(sentence.get(3));
+				py="\t"+sentence.get(1)+"="+sentence.get(1)+"+"+num[map];
+			}
+			else
+				py=py+"\t"+sentence.getFirst();
+			System.out.println(py);
+			return 1;
+		}
+		else
+			return -1;
+				
+	}
+	int store(LinkedList<String> sentence)
+	{
+		String py="";
+		if(loopflag!=0)
+			py=py+"\t";
+		else
+			py="";
+		if(sentence.getFirst().equals("store"))
+		{
+			var[vari]=sentence.getLast();
+			vari++;
+			py=py+sentence.getLast()+"="+previns;
+			previns="";
+			//System.out.println(py);
+			output=output+py+"\n";
+			return 1;
+		}
+		else
+			return -1;
+	}
+	 int onlyDigits(String str)
+	    {
+	        for (int i = 0; i < str.length(); i++) {
+	            if (!Character.isDigit(str.charAt(i))&&str.charAt(i)!='.') {
+	                return -1;
+	            }
+	        }
+	        return 1;
+	    }
+	int intialize(LinkedList<String> sentence)
+	{
+		int i;
+		String py="";
+		if(sentence.getFirst().equals("initialize")||sentence.getFirst().equals("set"))
+		{
+			var[vari]=sentence.get(1);
+			System.out.println(var[vari]);
+			vari++;
+			py=py+sentence.get(1);
+			i=onlyDigits(sentence.getLast());
+			if(i==1)
+				py=py+"="+sentence.getLast();
+			else
+				py=py+"="+"\""+sentence.getLast()+"\"";
+			output=output+py+"\n";
+			return 1;
+		}
+		else
+			return -1;
+	}
+	void read(LinkedList<String> sentence,int j)
+	{
+		int i;
+		if(print(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(inputting(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(arth(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(store(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(loopscondition(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(ending(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		if(intialize(sentence)==1)
+		{
+			System.out.print("");
+			return;
+		}
+		System.out.println("ERROR HAS OCCURED AT LINE "+(j+1));
+		return;
+	}
+	void sent()
+	{
+		LinkedList<String> sentence=new LinkedList();
+		int i,j,k=0;
+		for(i=0;i<linecnt;i++)
+		{
+			for(j=0;j<lines[i];j++)
+			{
+				sentence.add(ll.get(k));
+				k++;
+			}
+			read(sentence,i);
+			sentence.clear();
+		}
+	}
+	void print()
+	{	
+		System.out.println("\n");
+		System.out.println("\n");
+		System.out.println("Y0UR PYTHON CODE IS:");
+		System.out.println("-----------------------------------------------------");
+		System.out.println(output);
+	}
+	void mainpage()
+	{
+		System.out.println("\n");
+	}
+	void clearScreen() {  
+
+		   //System.out.print("\033[H\033[2J");  
+
+		   System.out.flush();  
+
+		}
+}
